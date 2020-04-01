@@ -1,0 +1,12 @@
+build:
+  stage: build
+  image: docker
+  before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+  - "export version=1.0"
+  - docker build --pull --rm --force-rm -t $CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$version -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-latest .
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker push $CI_REGISTRY_IMAGE:latest
+  - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$version
+  - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-latest
